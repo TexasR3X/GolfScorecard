@@ -1,12 +1,9 @@
 table {
   border-collapse: collapse;
+  margin: 0.75rem 0;
 }
 
 td {
   border: 1px solid #939393;
   padding: 0.75rem 1.5rem;
-}
-
-button {
-  margin-top: 0.75rem;
 }/*# sourceMappingURL=main.css.map */
