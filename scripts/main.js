@@ -63,7 +63,9 @@ const onLoad = async () => {
             const teeIndex = +(event.target.value);
             console.log("teeIndex:", teeIndex);
 
-            Table.create2GolfTables(course, teeIndex);
+            const tables = Table.create2GolfTables(course, teeIndex);
+
+            console.log("tables:", tables);
         }
         remakeTable({ target: { value: 0 } });
         HTML.selectTee.addEventListener("change", remakeTable)

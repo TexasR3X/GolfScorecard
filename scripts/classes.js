@@ -8,11 +8,7 @@ export class Table {
         return this;
     }
 
-    addColumn(cells) {
-        this.rows.forEach(() => {
-
-        });
-    }
+    addColumn(cells) { for (let i = 0; i < this.rows.length; i++) { this.rows[i].push(cells[i]); } }
 
     log(tableName) {
         console.log("=".repeat(50));
@@ -24,7 +20,7 @@ export class Table {
     getCell(x, y) { return this.rows[y][x] }
 
     static create2GolfTables(courseData, teeIndex) {
-        const buildMostOfTable = (table, holes, inOrOut) => {
+        const buildPartofTable = (table, holes, inOrOut) => {
             table.addRow(["Holes", ...holes, inOrOut]);
             table.addRow(["Yardage", ...getDataforAllHoles("yards", holes)]);
             table.addRow(["Par", ...getDataforAllHoles("par", holes)]);
@@ -47,18 +43,22 @@ export class Table {
         const getDataForHole = (holeNum, prop) => courseData.holes[holeNum - 1].teeBoxes[teeIndex][prop];
     
         const frontTable = new Table();
-        buildMostOfTable(frontTable, [1, 2, 3, 4, 5, 6, 7, 8, 9], "In");
-        frontTable.log("Front");
+        buildPartofTable(frontTable, [1, 2, 3, 4, 5, 6, 7, 8, 9], "In");
     
         const backTable = new Table();
-        buildMostOfTable(backTable, [10, 11, 12, 13, 14, 15, 16, 17, 18], "Out");
-        backTable.log("Back");
+        buildPartofTable(backTable, [10, 11, 12, 13, 14, 15, 16, 17, 18], "Out");
 
-        let totals = [];
+        let totals = ["Totals"];
         for (let i = 1; i < frontTable.rows.length; i++) {
             totals.push(frontTable.getCell(10, i) + backTable.getCell(10, i));
         }
-        
-        console.log("totals:", totals);
+
+        frontTable.addColumn(totals);
+        backTable.addColumn(totals);
+
+        return {
+            front: frontTable,
+            back: backTable
+        }
     }
 }
