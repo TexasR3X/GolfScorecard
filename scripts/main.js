@@ -1,4 +1,5 @@
 import * as HTML from "./html.js";
+import { Table } from "./classes.js";
 
 const fetchData = async (url) => await (await fetch(url)).json();
 
@@ -62,8 +63,7 @@ const onLoad = async () => {
             const teeIndex = +(event.target.value);
             console.log("teeIndex:", teeIndex);
 
-            HTML.buildTable(course, "front nine", teeIndex);
-            HTML.buildTable(course, "back nine", teeIndex);
+            Table.create2GolfTables(course, teeIndex);
         }
         remakeTable({ target: { value: 0 } });
         HTML.selectTee.addEventListener("change", remakeTable)
