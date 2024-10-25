@@ -39,7 +39,7 @@ const onLoad = async () => {
         HTML.selectCourse.appendChild(HTML.buildOption(course.id, course.name));
     });
 
-    const remakePage = async (event) => {
+    const remakeTeeSelect = async (event) => {
         console.log("event:", event);
         console.log("event.target.value:", event.target.value);
 
@@ -57,12 +57,19 @@ const onLoad = async () => {
             HTML.selectTee.appendChild(HTML.buildOption(i, teeBox.teeType.toUpperCase()));
         });
 
-        HTML.buildTable("", "front nine");
-        HTML.buildTable("", "back nine");
-    }
+        const remakeTable = async (event) => {
+            console.log("event:", event);
+            const teeIndex = +(event.target.value);
+            console.log("teeIndex:", teeIndex);
 
-    remakePage({ target: {value: golfCoursesData[0].id} });
-    HTML.selectCourse.addEventListener("change", remakePage);
+            HTML.buildTable(course, "front nine", teeIndex);
+            HTML.buildTable(course, "back nine", teeIndex);
+        }
+        remakeTable({ target: { value: 0 } });
+        HTML.selectTee.addEventListener("change", remakeTable)
+    }
+    remakeTeeSelect({ target: {value: golfCoursesData[0].id} });
+    HTML.selectCourse.addEventListener("change", remakeTeeSelect);
 
     
 
