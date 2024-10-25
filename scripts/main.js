@@ -1,23 +1,33 @@
 import * as HTML from "./html.js";
-import { Matrix, Row } from "./classes.js";
 
-const fetchAPI = async (url) => await (await fetch(url)).json();
+const fetchData = async (url) => await (await fetch(url)).json();
 
-const getCourse = (courseId) => {
-    
+const loadedCourses = [];
+const loadedCourseIds = [];
+
+const getCourse = async (courseId) => {
+    if (!loadedCourseIds.includes(courseId)) {
+        const newCourse = await fetchData(`https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/course${courseId}.json`);
+        console.log("newCourse:", newCourse);
+
+        loadedCourses.push(newCourse);
+        loadedCourseIds.push(courseId);
+
+        console.log("loadedCourses:", loadedCourses);
+        console.log("loadedCourseIds:", loadedCourseIds);
+    }
+
+    return loadedCourses[loadedCourseIds.indexOf(courseId)];
 }
 
 
 
 
 const onLoad = async () => {
-    let updateHTMLVar = "";
-
-
-    const golfCoursesData = await fetchAPI("https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/courses.json");
+    const golfCoursesData = await fetchData("https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/courses.json");
     console.log("golfCoursesData:", golfCoursesData);
 
-    const _thanksGiving_ = await fetchAPI("https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/course11819.json");
+    const _thanksGiving_ = await fetchData("https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/course11819.json");
     console.log("_thanksGiving_:", _thanksGiving_);
 
 
@@ -33,20 +43,25 @@ const onLoad = async () => {
         console.log("event:", event);
         console.log("event.target.value:", event.target.value);
 
-        const courseId = event.target.value;
-        const courseData = await fetchAPI(`https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/course${courseId}.json`);
+        const course = await getCourse(event.target.value);
 
-        console.log("courseData:", courseData);
+        console.log("course:", course);
 
-        HTML.thumbnailImage.src = courseData.thumbnail;
+        HTML.thumbnailImage.src = course.thumbnail;
 
-        courseData.forEach((course, i) => {
-            HTML.selectTee.appendChild(HTML.buildOption(i, course.name));
+        console.log("course.holes[0].teeBoxes:", course.holes[0].teeBoxes);
+        
+        // Build Tee Select
+        HTML.selectTee.innerHTML = "";
+        course.holes[0].teeBoxes.forEach((teeBox, i) => {
+            HTML.selectTee.appendChild(HTML.buildOption(i, teeBox.teeType.toUpperCase()));
         });
+
+        HTML.buildTable("", "front nine");
+        HTML.buildTable("", "back nine");
     }
 
     remakePage({ target: {value: golfCoursesData[0].id} });
-
     HTML.selectCourse.addEventListener("change", remakePage);
 
     
