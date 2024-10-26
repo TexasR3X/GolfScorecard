@@ -5,6 +5,10 @@ const fetchData = async (url) => await (await fetch(url)).json();
 
 const loadedCourses = [];
 const loadedCourseIds = [];
+const tables = {
+    front: new Table(),
+    back: new Table()
+}
 const players = [];
 
 const getCourse = async (courseId) => {
@@ -45,12 +49,57 @@ const onLoad = async () => {
         course.holes[0].teeBoxes.forEach((teeBox, i) => HTML.selectTee.appendChild(HTML.buildOption(i, teeBox.teeType.toUpperCase())));
 
         const remakeTable = async (event) => {
-            console.log("event:", event);
             const teeIndex = +(event.target.value);
             console.log("teeIndex:", teeIndex);
 
-            const tables = Table.create2GolfTables(course, teeIndex);
+            // const newTables = Table.create2GolfTables(course, teeIndex);
+            // tables.front = newTables.front;
+            // tables.back = newTables.back;
 
+            // ===== The following section builds the two tables as data. ===== //
+            // This creates a table without the last column (total column).
+            const buildPartOfTable = (table, holes, inOrOut) => {
+                table.addRow(["Holes", ...holes, inOrOut]);
+                table.addRow(["Yardage", ...getDataForAllHoles("yards", holes)]);
+                table.addRow(["Par", ...getDataForAllHoles("par", holes)]);
+                table.addRow(["Handicap", ...getDataForAllHoles("hcp", holes)]);
+            }
+            // This gets the data from course, finds the sum of all data points, and returns an array of each data point.
+            const getDataForAllHoles = (prop, holes) => {
+                let outputArr = [];
+                let sum = 0;
+
+                holes.forEach((num) => {
+                    let newDataPoint = getDataForHole(num, prop)
+                    outputArr.push(newDataPoint);
+                    sum += newDataPoint;
+                });
+
+                outputArr.push(sum);
+
+                return outputArr;
+            }
+            // Returns a specific data point from course.
+            const getDataForHole = (holeNum, prop) => course.holes[holeNum - 1].teeBoxes[teeIndex][prop];
+
+            // A Table class is created for the front and back scorecards.
+            const front_Table = new Table();
+            const back_Table = new Table();
+
+            // All of the data points for each table will be built, aside from the last column of each.
+            buildPartOfTable(tables.front, [1, 2, 3, 4, 5, 6, 7, 8, 9], "In");
+            buildPartOfTable(tables.back, [10, 11, 12, 13, 14, 15, 16, 17, 18], "Out");
+
+            // This gets the totals for the last column.
+            let totals = ["Totals"];
+            for (let i = 1; i < tables.front.rows.length; i++) { totals.push(tables.front.getCell(10, i) + tables.back.getCell(10, i)); }
+
+            // This adds the last column to each table.
+                // Both tables have the same totals column.
+            tables.front.addColumn(totals);
+            tables.back.addColumn(totals);
+
+            // ===== The following section takes the table data and puts it into HTML. ===== //
             console.log("tables:", tables);
 
             HTML.tableContainerFront.innerHTML = "";
@@ -59,19 +108,21 @@ const onLoad = async () => {
             HTML.tableContainerFront.appendChild(HTML.buildTable(tables.front));
             HTML.tableContainerBack.appendChild(HTML.buildTable(tables.back));
 
-
-            const addNewPlayer = (event) => {
-                players.push(new Player(prompt("Enter player's name:")));
-                console.log("players:", players);
-                
-                
-            }
-            HTML.addPlayer.addEventListener("click", addNewPlayer);
+            tables.front.log("Front");
+            tables.back.log("Back");
         }
         remakeTable({ target: { value: 0 } });
         HTML.selectTee.addEventListener("change", remakeTable)
     }
     remakeTeeSelect({ target: { value: golfCoursesData[0].id } });
     HTML.selectCourse.addEventListener("change", remakeTeeSelect);
+
+    const addNewPlayer = (event) => {
+        players.push(new Player(prompt("Enter player's name:")));
+        console.log("players:", players);
+
+        console.log("tables:", tables);
+    }
+    HTML.addPlayer.addEventListener("click", addNewPlayer);
 }
 onLoad();
