@@ -36,9 +36,7 @@ const onLoad = async () => {
     // HTML.selectTee.innerHTML = HTML.buidSelect(["Pro", "Champion", "Women", "Men"], "Tee Box");
     // HTML.selectCourse.innerHTML = HTML.buidSelect(golfCoursesData, "Course", "id", "name");
 
-    golfCoursesData.forEach((course) => {
-        HTML.selectCourse.appendChild(HTML.buildOption(course.id, course.name));
-    });
+    golfCoursesData.forEach((course) => HTML.selectCourse.appendChild(HTML.buildOption(course.id, course.name)));
 
     const remakeTeeSelect = async (event) => {
         console.log("event:", event);
@@ -54,9 +52,7 @@ const onLoad = async () => {
         
         // Build Tee Select
         HTML.selectTee.innerHTML = "";
-        course.holes[0].teeBoxes.forEach((teeBox, i) => {
-            HTML.selectTee.appendChild(HTML.buildOption(i, teeBox.teeType.toUpperCase()));
-        });
+        course.holes[0].teeBoxes.forEach((teeBox, i) => HTML.selectTee.appendChild(HTML.buildOption(i, teeBox.teeType.toUpperCase())));
 
         const remakeTable = async (event) => {
             console.log("event:", event);
@@ -66,11 +62,14 @@ const onLoad = async () => {
             const tables = Table.create2GolfTables(course, teeIndex);
 
             console.log("tables:", tables);
+
+            HTML.tableContainerFront.appendChild(HTML.buildTable(tables.front));
+            HTML.tableContainerBack.appendChild(HTML.buildTable(tables.back));
         }
         remakeTable({ target: { value: 0 } });
         HTML.selectTee.addEventListener("change", remakeTable)
     }
-    remakeTeeSelect({ target: {value: golfCoursesData[0].id} });
+    remakeTeeSelect({ target: { value: golfCoursesData[0].id } });
     HTML.selectCourse.addEventListener("change", remakeTeeSelect);
 
     

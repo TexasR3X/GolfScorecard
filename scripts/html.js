@@ -1,9 +1,18 @@
 import { Table } from "./classes.js";
 
+// I might not need this.
+HTMLElement.prototype.createAndAppend = function (elm) {
+    this.appendChild(document.createElement(elm));
+    return this;
+}
+
 export const thumbnailImage = document.querySelector("#thumbnail-image");
 export const selectTee = document.querySelector("#select-tee");
 export const selectCourse = document.querySelector("#select-course");
+export const tableContainerFront = document.querySelector("#table-container-front");
+export const tableContainerBack = document.querySelector("#table-container-back");
 
+// This should be deleted.
 export const buildOption0 = (value, content) => ` <option value="${value}">Select ${content}</option> `;
 
 export const buildOption = (value, content) => {
@@ -13,56 +22,30 @@ export const buildOption = (value, content) => {
     return option;
 }
 
-// (holes: array of holes (1...9) or (10...18), tableSelector: element selector, direction: "In" or "Out" on table.)
-
-/*
-export const buildDataTables = (courseData, teeIndex) => {
-    console.log("=".repeat(15) + " buildTable() " + "=".repeat(15));
-    console.log("courseData:", courseData);
-    console.log("teeIndex:", teeIndex);
-    console.log("");
-
-    // let holes;
-    // switch (holeValues) {
-    //     case "front nine":
-    //         holes = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    //         break;
-    //     case "back nine": 
-    //         holes = [10, 11, 12, 13, 14, 15, 16, 17, 18];
-    //         break;
-    //     default:
-    //         throw new Error(`Invalid value for holeValues: "${holeValues}"`);
-    // }
-
-    const getDataforAllHoles = (prop, holes) => {
-        let outputArr = [];
-        let sum = 0;
-
-        holes.forEach((num) => {
-            let newDataPoint = getDataForHole(num, prop)
-            outputArr.push(newDataPoint);
-            sum += newDataPoint;
-        });
-
-        outputArr.push(sum);
-
-        return outputArr;
+export const buildTable = (tableData) => {
+    const thead = document.createElement("thead");
+    const trInHead = document.createElement("tr");
+    for (let cell of tableData.getHeadRow()) {
+        const th = document.createElement("th");
+        th.textContent = cell;
+        trInHead.appendChild(th);
     }
-    const getDataForHole = (holeNum, prop) => courseData.holes[holeNum - 1].teeBoxes[teeIndex][prop];
-
-    const buildMostOfTable = (table, holes, inOrOut) => {
-        table.addRow(["Holes", ...holes, inOrOut]);
-        table.addRow(["Yardage", ...getDataforAllHoles("yards", holes)]);
-        table.addRow(["Par", ...getDataforAllHoles("par", holes)]);
-        table.addRow(["Handicap", ...getDataforAllHoles("hcp", holes)]);
+    thead.appendChild(trInHead);
+    
+    const tbody = document.createElement("tbody");
+    for (let row of tableData.getBodyRows()) {
+        const tr = document.createElement("tr");
+        for (let cell of row) {
+            const td = document.createElement("td");
+            td.textContent = cell;
+            tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
     }
 
-    const frontTable = new Table();
-    buildMostOfTable(frontTable, [1, 2, 3, 4, 5, 6, 7, 8, 9], "In");
-    frontTable.log("Front");
+    const table = document.createElement("table");
+    table.appendChild(thead);
+    table.appendChild(tbody);
 
-    const backTable = new Table();
-    buildMostOfTable(backTable, [10, 11, 12, 13, 14, 15, 16, 17, 18], "Out");
-    backTable.log("Back");
+    return table;
 }
-*/
