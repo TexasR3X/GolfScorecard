@@ -11,6 +11,7 @@ export const selectTee = document.querySelector("#select-tee");
 export const selectCourse = document.querySelector("#select-course");
 export const tableContainerFront = document.querySelector("#table-container-front");
 export const tableContainerBack = document.querySelector("#table-container-back");
+export const addPlayer = document.querySelector("#add-player");
 
 // This should be deleted.
 export const buildOption0 = (value, content) => ` <option value="${value}">Select ${content}</option> `;

@@ -1,10 +1,11 @@
 import * as HTML from "./html.js";
-import { Table } from "./classes.js";
+import { Table, Player } from "./classes.js";
 
 const fetchData = async (url) => await (await fetch(url)).json();
 
 const loadedCourses = [];
 const loadedCourseIds = [];
+const players = [];
 
 const getCourse = async (courseId) => {
     if (!loadedCourseIds.includes(courseId)) {
@@ -21,20 +22,9 @@ const getCourse = async (courseId) => {
     return loadedCourses[loadedCourseIds.indexOf(courseId)];
 }
 
-
-
-
 const onLoad = async () => {
     const golfCoursesData = await fetchData("https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/courses.json");
     console.log("golfCoursesData:", golfCoursesData);
-
-    const _thanksGiving_ = await fetchData("https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/course11819.json");
-    console.log("_thanksGiving_:", _thanksGiving_);
-
-
-    // Add content to the select elements.
-    // HTML.selectTee.innerHTML = HTML.buidSelect(["Pro", "Champion", "Women", "Men"], "Tee Box");
-    // HTML.selectCourse.innerHTML = HTML.buidSelect(golfCoursesData, "Course", "id", "name");
 
     golfCoursesData.forEach((course) => HTML.selectCourse.appendChild(HTML.buildOption(course.id, course.name)));
 
@@ -68,23 +58,20 @@ const onLoad = async () => {
 
             HTML.tableContainerFront.appendChild(HTML.buildTable(tables.front));
             HTML.tableContainerBack.appendChild(HTML.buildTable(tables.back));
+
+
+            const addNewPlayer = (event) => {
+                players.push(new Player(prompt("Enter player's name:")));
+                console.log("players:", players);
+                
+                
+            }
+            HTML.addPlayer.addEventListener("click", addNewPlayer);
         }
         remakeTable({ target: { value: 0 } });
         HTML.selectTee.addEventListener("change", remakeTable)
     }
     remakeTeeSelect({ target: { value: golfCoursesData[0].id } });
     HTML.selectCourse.addEventListener("change", remakeTeeSelect);
-
-    
-
-
-
-    // updateHTMLVar = "";
-    // [{ id: "select", name: "Select Course" }, ...golfCoursesData].forEach((course) => {
-    //     updateHTMLVar += HTML.buildOption(course.id, course.name);
-    // });
-    // HTML.selectTee.innerHTML = updateHTMLVar;
-
-    
 }
 onLoad();

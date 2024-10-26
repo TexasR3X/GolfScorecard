@@ -73,3 +73,20 @@ export class Table {
         }
     }
 }
+
+
+const createIterable = (first = 0) => {
+    return {
+        current: first,
+        next() { return this.current++; }
+    }
+}
+const idIterable = createIterable();
+
+export class Player {
+    constructor(name, id = idIterable.next(), scores = []) {
+        this.name = name;
+        this.id = id;
+        this.scores = [];
+    }
+}
