@@ -3,13 +3,7 @@ export class Table {
         this.rows = [];
     }
 
-    addRow(cells) {
-        // This will add a new row to the Table object.
-        this.rows.push(cells);
-        // Returning the Table will allow createRow() to be chained.
-        return this;
-    }
-
+    addRow(cells) { this.rows.push(cells); }
     addColumn(cells) { for (let i = 0; i < this.rows.length; i++) { this.rows[i].push(cells[i]); } }
 
     log(tableName) {

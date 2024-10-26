@@ -1,9 +1,13 @@
+#table-container-front, #table-container-back {
+  overflow: scroll;
+}
+
 table {
   border-collapse: collapse;
   margin: 0.75rem 0;
 }
 
-td {
+th, td {
   border: 1px solid #939393;
   padding: 0.75rem 1.5rem;
 }/*# sourceMappingURL=main.css.map */

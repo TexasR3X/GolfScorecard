@@ -63,6 +63,9 @@ const onLoad = async () => {
 
             console.log("tables:", tables);
 
+            HTML.tableContainerFront.innerHTML = "";
+            HTML.tableContainerBack.innerHTML = "";
+
             HTML.tableContainerFront.appendChild(HTML.buildTable(tables.front));
             HTML.tableContainerBack.appendChild(HTML.buildTable(tables.back));
         }
