@@ -50,3 +50,11 @@ export const buildTable = (tableData) => {
 
     return table;
 }
+
+export const buildInput = (playerId, tableXCoor, value = "") => {
+    const input = document.createElement("input");
+    input.id = `player-${playerId}-input-${tableXCoor}`;
+    input.type = "number";
+    input.value = value;
+    return input;
+}

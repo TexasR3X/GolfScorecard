@@ -7,7 +7,11 @@ const loadedCourses = [];
 const loadedCourseIds = [];
 const tables = {
     front: new Table(),
-    back: new Table()
+    back: new Table(),
+    callBoth(methodName, ...args) {
+        this.front[methodName].apply(this.front, args);
+        this.back[methodName].apply(this.back, args);
+    }
 }
 const players = [];
 
@@ -49,13 +53,6 @@ const onLoad = async () => {
         course.holes[0].teeBoxes.forEach((teeBox, i) => HTML.selectTee.appendChild(HTML.buildOption(i, teeBox.teeType.toUpperCase())));
 
         const remakeTable = async (event) => {
-            const teeIndex = +(event.target.value);
-            console.log("teeIndex:", teeIndex);
-
-            // const newTables = Table.create2GolfTables(course, teeIndex);
-            // tables.front = newTables.front;
-            // tables.back = newTables.back;
-
             // ===== The following section builds the two tables as data. ===== //
             // This creates a table without the last column (total column).
             const buildPartOfTable = (table, holes, inOrOut) => {
@@ -80,11 +77,13 @@ const onLoad = async () => {
                 return outputArr;
             }
             // Returns a specific data point from course.
-            const getDataForHole = (holeNum, prop) => course.holes[holeNum - 1].teeBoxes[teeIndex][prop];
+                // holes[holeNum - 1].teeBoxes[+(event.target.value)][prop] -> Path to get yards, par, or hcp for a specific hole.
+                // +(event.target.value) -> The tee index.
+            const getDataForHole = (holeNum, prop) => course.holes[holeNum - 1].teeBoxes[+(event.target.value)][prop];
 
-            // A Table class is created for the front and back scorecards.
-            const front_Table = new Table();
-            const back_Table = new Table();
+            // A tables are cleared of all data they had.
+            tables.front.clear();
+            tables.back.clear();
 
             // All of the data points for each table will be built, aside from the last column of each.
             buildPartOfTable(tables.front, [1, 2, 3, 4, 5, 6, 7, 8, 9], "In");
@@ -107,9 +106,6 @@ const onLoad = async () => {
 
             HTML.tableContainerFront.appendChild(HTML.buildTable(tables.front));
             HTML.tableContainerBack.appendChild(HTML.buildTable(tables.back));
-
-            tables.front.log("Front");
-            tables.back.log("Back");
         }
         remakeTable({ target: { value: 0 } });
         HTML.selectTee.addEventListener("change", remakeTable)
@@ -118,10 +114,24 @@ const onLoad = async () => {
     HTML.selectCourse.addEventListener("change", remakeTeeSelect);
 
     const addNewPlayer = (event) => {
-        players.push(new Player(prompt("Enter player's name:")));
+        const newPlayer = new Player(prompt("Enter player's name:"));
+        players.push(newPlayer);
+
         console.log("players:", players);
 
-        console.log("tables:", tables);
+        console.log(`HTML.buildInput(12345, 2):`, HTML.buildInput(12345, 2));
+        let inputArr = [];
+        for (let i = 1; i < 10; i++) {
+            inputArr.push(HTML.buildInput(newPlayer.id, i));
+        }
+
+        tables.callBoth("addRow", [
+            newPlayer.name,
+
+        ]);
+        
+
+        tables.callBoth("log");
     }
     HTML.addPlayer.addEventListener("click", addNewPlayer);
 }

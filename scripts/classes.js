@@ -6,9 +6,9 @@ export class Table {
     addRow(cells) { this.rows.push(cells); }
     addColumn(cells) { for (let i = 0; i < this.rows.length; i++) { this.rows[i].push(cells[i]); } }
 
-    log(tableName) {
+    log() {
         console.log("=".repeat(50));
-        console.log("Table:", tableName ?? "");
+        console.log(`${this.rows[0].includes("In")? "Front": "Back"} Table:`);
         this.rows.forEach((_items, i) => console.log(this.rows[i]));
         console.log("=".repeat(50));
     }
@@ -22,6 +22,8 @@ export class Table {
         bodyRows.shift();
         return bodyRows;
     }
+
+    clear() { this.rows = []; }
 }
 
 
