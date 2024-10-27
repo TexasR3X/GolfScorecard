@@ -38,7 +38,11 @@ export const buildTable = (tableData) => {
         const tr = document.createElement("tr");
         for (let cell of row) {
             const td = document.createElement("td");
-            td.textContent = cell;
+
+            if (typeof cell === "string" || typeof cell === "number") td.textContent = cell;
+            else if (typeof cell === "object") td.appendChild(cell);
+            else throw new Error(`In valid "cell" data type`);
+
             tr.appendChild(td);
         }
         tbody.appendChild(tr);
@@ -51,10 +55,20 @@ export const buildTable = (tableData) => {
     return table;
 }
 
-export const buildInput = (playerId, tableXCoor, value = "") => {
+export const buildScoreInput = (playerId, tableXCoor, value = "") => {
     const input = document.createElement("input");
-    input.id = `player-${playerId}-input-${tableXCoor}`;
+    input.id = `input-${tableXCoor}--player-${playerId}`;
+    input.class = "score-input";
     input.type = "number";
     input.value = value;
     return input;
+}
+
+export const buildTotalSpan = (playerId, totalType, value = 0) => {
+    const span = document.createElement("span");
+    span.id = `total-${totalType.toLowerCase()}--player-${playerId}`;
+    //
+    span.className = `total-${totalType}`;
+    span.textContent = value;
+    return span;
 }

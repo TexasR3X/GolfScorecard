@@ -3,8 +3,8 @@ export class Table {
         this.rows = [];
     }
 
-    addRow(cells) { this.rows.push(cells); }
-    addColumn(cells) { for (let i = 0; i < this.rows.length; i++) { this.rows[i].push(cells[i]); } }
+    addRow(row) { this.rows.push(row); }
+    addColumn(column) { for (let i = 0; i < this.rows.length; i++) { this.rows[i].push(column[i]); } }
 
     log() {
         console.log("=".repeat(50));
@@ -14,6 +14,7 @@ export class Table {
     }
 
     getCell(x, y) { return this.rows[y][x]; }
+    setCell(x, y, newValue) { this.rows[y][x] = newValue; }
     // This returns the top row.
     getHeadRow() { return this.rows[0]; }
     // This returns all the rows other than the top one.

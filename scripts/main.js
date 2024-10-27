@@ -1,8 +1,6 @@
 import * as HTML from "./html.js";
 import { Table, Player } from "./classes.js";
 
-const fetchData = async (url) => await (await fetch(url)).json();
-
 const loadedCourses = [];
 const loadedCourseIds = [];
 const tables = {
@@ -11,10 +9,18 @@ const tables = {
     callBoth(methodName, ...args) {
         this.front[methodName].apply(this.front, args);
         this.back[methodName].apply(this.back, args);
+    },
+    buildTables() {
+        HTML.tableContainerFront.innerHTML = "";
+        HTML.tableContainerBack.innerHTML = "";
+
+        HTML.tableContainerFront.appendChild(HTML.buildTable(this.front));
+        HTML.tableContainerBack.appendChild(HTML.buildTable(this.back));
     }
 }
 const players = [];
 
+const fetchData = async (url) => await (await fetch(url)).json();
 const getCourse = async (courseId) => {
     if (!loadedCourseIds.includes(courseId)) {
         const newCourse = await fetchData(`https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/course${courseId}.json`);
@@ -28,6 +34,18 @@ const getCourse = async (courseId) => {
     }
 
     return loadedCourses[loadedCourseIds.indexOf(courseId)];
+}
+const repeatFn = (firstIndex, lastIndex, callbackFn, ...inputFnArgs) => {
+    const outputArr = [];
+
+    for (let i = firstIndex; i <= lastIndex; i++) {
+        const finalFnArgs = [...inputFnArgs];
+        if (finalFnArgs.includes("current index")) finalFnArgs[finalFnArgs.indexOf("current index")] = i;
+
+        outputArr.push(callbackFn(...finalFnArgs));
+    }
+
+    return outputArr;
 }
 
 const onLoad = async () => {
@@ -98,14 +116,8 @@ const onLoad = async () => {
             tables.front.addColumn(totals);
             tables.back.addColumn(totals);
 
-            // ===== The following section takes the table data and puts it into HTML. ===== //
-            console.log("tables:", tables);
-
-            HTML.tableContainerFront.innerHTML = "";
-            HTML.tableContainerBack.innerHTML = "";
-
-            HTML.tableContainerFront.appendChild(HTML.buildTable(tables.front));
-            HTML.tableContainerBack.appendChild(HTML.buildTable(tables.back));
+            // ===== This takes the table data and builds it into HTML tables. ===== //
+            tables.buildTables();
         }
         remakeTable({ target: { value: 0 } });
         HTML.selectTee.addEventListener("change", remakeTable)
@@ -116,22 +128,24 @@ const onLoad = async () => {
     const addNewPlayer = (event) => {
         const newPlayer = new Player(prompt("Enter player's name:"));
         players.push(newPlayer);
-
         console.log("players:", players);
 
-        console.log(`HTML.buildInput(12345, 2):`, HTML.buildInput(12345, 2));
-        let inputArr = [];
-        for (let i = 1; i < 10; i++) {
-            inputArr.push(HTML.buildInput(newPlayer.id, i));
-        }
-
-        tables.callBoth("addRow", [
+        tables.front.addRow([
             newPlayer.name,
-
+            ...repeatFn(1, 9, HTML.buildScoreInput, newPlayer.id, "current index"),
+            HTML.buildTotalSpan(newPlayer.id, "in"),
+            HTML.buildTotalSpan(newPlayer.id, "in-overall")
         ]);
-        
+        tables.back.addRow([
+            newPlayer.name,
+            ...repeatFn(10, 18, HTML.buildScoreInput, newPlayer.id, "current index"),
+            HTML.buildTotalSpan(newPlayer.id, "out"),
+            HTML.buildTotalSpan(newPlayer.id, "out-overall")
+        ]);
 
         tables.callBoth("log");
+
+        tables.buildTables();
     }
     HTML.addPlayer.addEventListener("click", addNewPlayer);
 }
