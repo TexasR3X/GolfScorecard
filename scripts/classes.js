@@ -72,13 +72,19 @@ export class Player {
         this.totalOverall = this.totalIn + this.totalOut;
     }
 
-    static getPlayerById(id) { for (const player of players) { if (player.id === id) return player; } }
+    static getPlayerById(id) {
+        for (const player of players) {
+            console.log("player:", player);
+            if (player.id === id) return player;
+        }
+    }
 
     static getPlayerByTd(td) {
-        const playerName = td.parentNode.children[0].textContent;
+        const playerId = td.parentNode.children[0].dataset.id;
+        console.log("playerId:", playerId);
         const tbodyChildren = td.parentNode.parentNode.children;
 
-        for (let i = 0; i < tbodyChildren.length; i++) { if (tbodyChildren[i].children[0].textContent === playerName) return players[i - 3]; }
+        for (let i = 0; i < tbodyChildren.length; i++) { if (tbodyChildren[i].children[0].dataset.id === playerId) return players[i - 3]; }
     }
 }
 

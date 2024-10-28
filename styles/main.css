@@ -10,4 +10,13 @@ table {
 th, td {
   border: 1px solid #939393;
   padding: 0.75rem 1.5rem;
+  text-align: center;
+}
+
+th {
+  background: #6596ff;
+}
+
+td {
+  background: #cdddff;
 }/*# sourceMappingURL=main.css.map */

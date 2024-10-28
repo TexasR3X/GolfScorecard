@@ -9,13 +9,9 @@ const fetchData = async (url) => await (await fetch(url)).json();
 const getCourse = async (courseId) => {
     if (!loadedCourseIds.includes(courseId)) {
         const newCourse = await fetchData(`https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/course${courseId}.json`);
-        console.log("newCourse:", newCourse);
 
         loadedCourses.push(newCourse);
         loadedCourseIds.push(courseId);
-
-        console.log("loadedCourses:", loadedCourses);
-        console.log("loadedCourseIds:", loadedCourseIds);
     }
 
     return loadedCourses[loadedCourseIds.indexOf(courseId)];
@@ -113,7 +109,9 @@ const onLoad = async () => {
 
     const addNewPlayer = () => {
         const newPlayer = new Player(prompt("Enter player's name:"));
-        // console.log(`\n!players.includes(newPlayer): ${!players.includes(newPlayer)}\n`);
+        
+        if (newPlayer.name === null || newPlayer.name === "") return; // Don't allow empty player names to be empty.
+
         players.push(newPlayer);
 
         tables.callBoth("addRow", [
@@ -153,7 +151,7 @@ const onLoad = async () => {
             input.addEventListener("blur", () => {
                 player.updateScore(hole, input.value);
 
-                const newRow = [player.name];
+                const newRow = [player.id];
                 if (isFront) {
                     newRow.push(...player.scores.slice(1, 10), player.totalIn, player.totalOverall);
 
@@ -164,6 +162,8 @@ const onLoad = async () => {
 
                     tables.updateTableRow("back", rowIndex, newRow);
                 }
+
+                tables.callBoth("log");
 
                 tables.buildTables();
             }, { once: true });
