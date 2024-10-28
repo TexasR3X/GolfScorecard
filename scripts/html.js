@@ -23,14 +23,23 @@ export const buildTable = (tableData) => {
     thead.appendChild(trInHead);
     
     const tbody = document.createElement("tbody");
-    for (let row of tableData.getBodyRows()) {
+    for (let i = 0; i < tableData.getBodyRows().length; i++) {
+        const row = tableData.getBodyRows()[i];
         const tr = document.createElement("tr");
-        for (let cell of row) {
+        
+        for (let j = 0; j < row.length; j++) {
+            const cell = row[j]
             const td = document.createElement("td");
 
-            if (typeof cell === "string" || typeof cell === "number") td.textContent = cell;
-            else if (typeof cell === "object") td.appendChild(cell);
-            else throw new Error(`In valid "cell" data type`);
+            if (j > 3 && i !== 0 && i > 9) {
+
+            }
+
+            td.textContent = cell ?? "";
+
+            // if (typeof cell === "string" || typeof cell === "number") td.textContent = cell;
+            // else if (typeof cell === "object") td.appendChild(cell);
+            // else throw new Error(`In valid "cell" data type`);
 
             tr.appendChild(td);
         }
@@ -55,9 +64,7 @@ export const buildScoreInput = (playerId, tableXCoor, value = "") => {
 
 export const buildTotalSpan = (playerId, totalType, value = 0) => {
     const span = document.createElement("span");
-    span.id = `total-${totalType.toLowerCase()}--player-${playerId}`;
-    // I might not need the class here.
-    span.className = `total-${totalType}`;
+    span.id = `total-${totalType}--player-${playerId}`;
     span.textContent = value;
     return span;
 }

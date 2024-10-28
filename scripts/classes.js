@@ -67,4 +67,8 @@ export class Player {
         // This updates this.totalOverall
         this.totalOverall = this.totalIn + this.totalOut;
     }
+
+    static myFn() {
+        
+    }
 }

@@ -131,17 +131,32 @@ const onLoad = async () => {
         players.push(newPlayer);
         console.log("players:", players);
 
+        // tables.front.addRow([
+        //     newPlayer.name,
+        //     ...repeatFn(1, 9, HTML.buildScoreInput, newPlayer.id, "current index"),
+        //     HTML.buildTotalSpan(newPlayer.id, "in"),
+        //     HTML.buildTotalSpan(newPlayer.id, "in-overall")
+        // ]);
+        // tables.back.addRow([
+        //     newPlayer.name,
+        //     ...repeatFn(10, 18, HTML.buildScoreInput, newPlayer.id, "current index"),
+        //     HTML.buildTotalSpan(newPlayer.id, "out"),
+        //     HTML.buildTotalSpan(newPlayer.id, "out-overall")
+        // ]);
+        tables.callBoth("log");
+        console.log("Log the tables! (above)")
+
         tables.front.addRow([
             newPlayer.name,
-            ...repeatFn(1, 9, HTML.buildScoreInput, newPlayer.id, "current index"),
-            HTML.buildTotalSpan(newPlayer.id, "in"),
-            HTML.buildTotalSpan(newPlayer.id, "in-overall")
+            null, null, null, null, null, null, null, null, null,
+            0,
+            0
         ]);
         tables.back.addRow([
             newPlayer.name,
-            ...repeatFn(10, 18, HTML.buildScoreInput, newPlayer.id, "current index"),
-            HTML.buildTotalSpan(newPlayer.id, "out"),
-            HTML.buildTotalSpan(newPlayer.id, "out-overall")
+            null, null, null, null, null, null, null, null, null,
+            0,
+            0
         ]);
 
         tables.callBoth("log");
@@ -165,7 +180,9 @@ const onLoad = async () => {
             console.log("player:", player);
             console.log("player.scores:", player.scores);
 
-            
+            tables.callBoth("log");
+
+            // `total-${totalType}--player-${playerId}`
         }
     }
     document.addEventListener("change", scoreChange);
