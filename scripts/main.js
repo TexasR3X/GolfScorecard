@@ -16,37 +16,16 @@ const getCourse = async (courseId) => {
 
     return loadedCourses[loadedCourseIds.indexOf(courseId)];
 }
-const repeatFn = (firstIndex, lastIndex, callbackFn, ...inputFnArgs) => {
-    const outputArr = [];
-
-    for (let i = firstIndex; i <= lastIndex; i++) {
-        const finalFnArgs = [...inputFnArgs];
-        if (finalFnArgs.includes("current index")) finalFnArgs[finalFnArgs.indexOf("current index")] = i;
-
-        outputArr.push(callbackFn(...finalFnArgs));
-    }
-
-    return outputArr;
-}
-const waitFor = (condition) => { const intervalId = setInterval(() => { if (condition) clearInterval(intervalId); }, 1000); }
 
 const onLoad = async () => {
     const golfCoursesData = await fetchData("https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/courses.json");
-    console.log("golfCoursesData:", golfCoursesData);
 
     golfCoursesData.forEach((course) => HTML.selectCourse.appendChild(HTML.buildOption(course.id, course.name)));
 
     const remakeTeeSelect = async (event) => {
-        console.log("event:", event);
-        console.log("event.target.value:", event.target.value);
-
         const course = await getCourse(event.target.value);
 
-        console.log("course:", course);
-
         HTML.thumbnailImage.src = course.thumbnail;
-
-        console.log("course.holes[0].teeBoxes:", course.holes[0].teeBoxes);
         
         // Build Tee Select
         HTML.selectTee.innerHTML = "";

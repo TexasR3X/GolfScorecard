@@ -36,10 +36,7 @@ export const buildTable = (tableData) => {
             if (i > 2 && j !== 0 && j < 10) td.className = "player-score";
 
             if (i > 2 && j === 0) {
-                console.log("cell:", cell);
-                console.log("Player.getPlayerById(cell):", Player.getPlayerById(cell));
                 td.textContent = Player.getPlayerById(cell).name;
-                // I might not need this dataset.
                 td.dataset.id = cell;
             }
             else td.textContent = cell ?? "";
