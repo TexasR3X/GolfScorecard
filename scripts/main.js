@@ -47,6 +47,7 @@ const repeatFn = (firstIndex, lastIndex, callbackFn, ...inputFnArgs) => {
 
     return outputArr;
 }
+const waitFor = (condition) => { const intervalId = setInterval(() => { if (condition) clearInterval(intervalId); }, 1000); }
 
 const onLoad = async () => {
     const golfCoursesData = await fetchData("https://exquisite-pastelito-9d4dd1.netlify.app/golfapi/courses.json");
@@ -125,7 +126,7 @@ const onLoad = async () => {
     remakeTeeSelect({ target: { value: golfCoursesData[0].id } });
     HTML.selectCourse.addEventListener("change", remakeTeeSelect);
 
-    const addNewPlayer = (event) => {
+    const addNewPlayer = () => {
         const newPlayer = new Player(prompt("Enter player's name:"));
         players.push(newPlayer);
         console.log("players:", players);
@@ -148,5 +149,25 @@ const onLoad = async () => {
         tables.buildTables();
     }
     HTML.addPlayer.addEventListener("click", addNewPlayer);
+
+    const scoreChange = (event) => {
+        const scoreInput = event.target;
+
+        if (scoreInput.className === "score-input") {
+            const player = players[scoreInput.id.replace(/^input-\d+--player-(?<id>\d+)$/g, "$<id>")];
+            const hole = +(scoreInput.id.replace(/^input-(?<index>\d+)--player-\d+$/g, "$<index>"));
+
+            
+
+            // This updates the hole and the totals for the selected player.
+            player.updateScore(hole, scoreInput.value);
+
+            console.log("player:", player);
+            console.log("player.scores:", player.scores);
+
+            
+        }
+    }
+    document.addEventListener("change", scoreChange);
 }
 onLoad();

@@ -58,7 +58,7 @@ export const buildTable = (tableData) => {
 export const buildScoreInput = (playerId, tableXCoor, value = "") => {
     const input = document.createElement("input");
     input.id = `input-${tableXCoor}--player-${playerId}`;
-    input.class = "score-input";
+    input.className = "score-input";
     input.type = "number";
     input.value = value;
     return input;
@@ -67,7 +67,7 @@ export const buildScoreInput = (playerId, tableXCoor, value = "") => {
 export const buildTotalSpan = (playerId, totalType, value = 0) => {
     const span = document.createElement("span");
     span.id = `total-${totalType.toLowerCase()}--player-${playerId}`;
-    //
+    // I might not need the class here.
     span.className = `total-${totalType}`;
     span.textContent = value;
     return span;
