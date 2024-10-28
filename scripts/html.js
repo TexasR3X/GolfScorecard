@@ -1,11 +1,3 @@
-import { Table } from "./classes.js";
-
-// I might not need this.
-HTMLElement.prototype.createAndAppend = function (elm) {
-    this.appendChild(document.createElement(elm));
-    return this;
-}
-
 export const thumbnailImage = document.querySelector("#thumbnail-image");
 export const selectTee = document.querySelector("#select-tee");
 export const selectCourse = document.querySelector("#select-course");
