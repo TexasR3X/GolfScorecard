@@ -8,12 +8,7 @@ export class Table {
     addRow(row) { this.rows.push(row); }
     addColumn(column) { for (let i = 0; i < this.rows.length; i++) { this.rows[i].push(column[i]); } }
 
-    log() {
-        console.log("=".repeat(50));
-        console.log(`${this.rows[0].includes("In")? "Front": "Back"} Table:`);
-        this.rows.forEach((_items, i) => console.log(this.rows[i]));
-        console.log("=".repeat(50));
-    }
+    updateRow(rowIndex, newRow) { this.rows[rowIndex] = newRow; }
 
     getCell(x, y) { return this.rows[y][x]; }
     setCell(x, y, newValue) { this.rows[y][x] = newValue; }
@@ -27,6 +22,13 @@ export class Table {
     }
 
     clear() { this.rows = []; }
+
+    log() {
+        console.log("=".repeat(50));
+        console.log(`${this.rows[0].includes("In")? "Front": "Back"} Table:`);
+        this.rows.forEach((_items, i) => console.log(this.rows[i]));
+        console.log("=".repeat(50));
+    }
 }
 
 
@@ -40,9 +42,9 @@ const idIterable = createIterable();
 
 export class Player {
     constructor(name, id = idIterable.next(), scores = ["placeholder", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]) {
-        this.name = name;
-        this.id = id;
-        this.scores = scores;
+        this.name = name; // String
+        this.id = id; // Number
+        this.scores = scores; // Array
 
         // This method will do the following:
             // this.totalIn = 0;
@@ -70,6 +72,8 @@ export class Player {
         this.totalOverall = this.totalIn + this.totalOut;
     }
 
+    static getPlayerById(id) { for (const player of players) { if (player.id === id) return player; } }
+
     static getPlayerByTd(td) {
         const playerName = td.parentNode.children[0].textContent;
         const tbodyChildren = td.parentNode.parentNode.children;
@@ -93,6 +97,20 @@ export const tables = {
 
         HTML.tableContainerFront.appendChild(HTML.buildTable(this.front));
         HTML.tableContainerBack.appendChild(HTML.buildTable(this.back));
+    },
+    updateTableRow(frontOrBack, rowIndex, newRow) {
+        // Note that when one table is edited, both tables need to have new overall totals, so they both need to be updated.
+
+        if (frontOrBack === "front") {
+            this.front.updateRow(rowIndex, newRow);
+
+            this.back.rows[rowIndex][this.back.rows[rowIndex].length - 1] = this.front.rows[rowIndex][this.front.rows[rowIndex].length - 1];
+        }
+        else {
+            this.back.updateRow(rowIndex, newRow);
+
+            this.front.rows[rowIndex][this.front.rows[rowIndex].length - 1] = this.back.rows[rowIndex][this.back.rows[rowIndex].length - 1];
+        }
     }
 }
 export const players = [];

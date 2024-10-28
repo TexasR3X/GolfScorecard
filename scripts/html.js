@@ -1,3 +1,5 @@
+import { Player, players } from "./classes.js";
+
 export const thumbnailImage = document.querySelector("#thumbnail-image");
 export const selectTee = document.querySelector("#select-tee");
 export const selectCourse = document.querySelector("#select-course");
@@ -32,7 +34,12 @@ export const buildTable = (tableData) => {
             const td = document.createElement("td");
 
             if (i > 2 && j !== 0 && j < 10) td.className = "player-score";
-            td.textContent = cell ?? "";
+
+            if (i > 2 && j === 0) {
+                td.textContent = Player.getPlayerById(cell).name;
+                td.dataset.id = cell;
+            }
+            else td.textContent = cell ?? "";
 
             tr.appendChild(td);
         }
@@ -67,3 +74,16 @@ export const siblingIndex = (elm) => {
 
     for (let i = 0; i < parentChildren.length; i++) { if (parentChildren[i] === elm) return i; }
 }
+
+export const prototypeAdditions = {
+    clearContent() {
+        const textContent = this.textContent;
+        this.textContent = "";
+        return textContent; // String
+    },
+    findTableParent() {
+        if (this?.className === "table-container") return this.id.slice(16);
+        else return this.parentNode.findTableParent();
+    }
+}
+export const updateHTMLElementPrototype = () => { for (const prop in prototypeAdditions) { HTMLElement.prototype[prop] = prototypeAdditions[prop]; } }

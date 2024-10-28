@@ -1,4 +1,5 @@
 import * as HTML from "./html.js";
+HTML.updateHTMLElementPrototype();
 import { Table, tables, Player, players } from "./classes.js";
 
 const loadedCourses = [];
@@ -112,32 +113,11 @@ const onLoad = async () => {
 
     const addNewPlayer = () => {
         const newPlayer = new Player(prompt("Enter player's name:"));
+        // console.log(`\n!players.includes(newPlayer): ${!players.includes(newPlayer)}\n`);
         players.push(newPlayer);
-        console.log("players:", players);
 
-        // tables.front.addRow([
-        //     newPlayer.name,
-        //     ...repeatFn(1, 9, HTML.buildScoreInput, newPlayer.id, "current index"),
-        //     HTML.buildTotalSpan(newPlayer.id, "in"),
-        //     HTML.buildTotalSpan(newPlayer.id, "in-overall")
-        // ]);
-        // tables.back.addRow([
-        //     newPlayer.name,
-        //     ...repeatFn(10, 18, HTML.buildScoreInput, newPlayer.id, "current index"),
-        //     HTML.buildTotalSpan(newPlayer.id, "out"),
-        //     HTML.buildTotalSpan(newPlayer.id, "out-overall")
-        // ]);
-        tables.callBoth("log");
-        console.log("Log the tables! (above)")
-
-        tables.front.addRow([
-            newPlayer.name,
-            null, null, null, null, null, null, null, null, null,
-            0,
-            0
-        ]);
-        tables.back.addRow([
-            newPlayer.name,
+        tables.callBoth("addRow", [
+            newPlayer.id,
             null, null, null, null, null, null, null, null, null,
             0,
             0
@@ -151,41 +131,42 @@ const onLoad = async () => {
 
     const scoreChange = (event) => {
         if (event.target.tagName === "TD" && event.target.className === "player-score") {
-            console.log("Click Inside");
             const td = event.target;
-            // I need to fix this for holes 10 through 18.
-            const hole = HTML.siblingIndex(td);
+
             const player = Player.getPlayerByTd(td);
-            console.log("player:", player);
+
+            const isFront = td.findTableParent() === "front";
+
+            let hole;
+            if (isFront) hole = HTML.siblingIndex(td);
+            else hole = HTML.siblingIndex(td) + 9;
+
+            const rowIndex = player.id + 4;
 
             const input = document.createElement("input");
-            input.value = td.textContent;
+            input.value = td.clearContent();
+            input.type = "number";
             td.appendChild(input);
 
-            input.addEventListener("blur", (event) => {
+            input.focus();
+            input.addEventListener("keydown", (event) => { if (event.key === "Enter") input.blur(); });
+            input.addEventListener("blur", () => {
                 player.updateScore(hole, input.value);
 
-                td.textContent = // ........................................................................
+                const newRow = [player.name];
+                if (isFront) {
+                    newRow.push(...player.scores.slice(1, 10), player.totalIn, player.totalOverall);
 
-                tables.callBoth("log");
+                    tables.updateTableRow("front", rowIndex, newRow);
+                }
+                else {
+                    newRow.push(...player.scores.slice(10), player.totalOut, player.totalOverall);
+
+                    tables.updateTableRow("back", rowIndex, newRow);
+                }
+
+                tables.buildTables();
             }, { once: true });
-
-
-
-            // const player = players[scoreInput.id.replace(/^input-\d+--player-(?<id>\d+)$/g, "$<id>")];
-            // const hole = +(scoreInput.id.replace(/^input-(?<index>\d+)--player-\d+$/g, "$<index>"));
-
-            
-
-            // This updates the hole and the totals for the selected player.
-            // player.updateScore(hole, scoreInput.value);
-
-            // console.log("player:", player);
-            // console.log("player.scores:", player.scores);
-
-            
-
-            // `total-${totalType}--player-${playerId}`
         }
     }
     document.addEventListener("click", scoreChange);
