@@ -31,15 +31,8 @@ export const buildTable = (tableData) => {
             const cell = row[j]
             const td = document.createElement("td");
 
-            if (j > 3 && i !== 0 && i > 9) {
-
-            }
-
+            if (i > 2 && j !== 0 && j < 10) td.className = "player-score";
             td.textContent = cell ?? "";
-
-            // if (typeof cell === "string" || typeof cell === "number") td.textContent = cell;
-            // else if (typeof cell === "object") td.appendChild(cell);
-            // else throw new Error(`In valid "cell" data type`);
 
             tr.appendChild(td);
         }
@@ -67,4 +60,10 @@ export const buildTotalSpan = (playerId, totalType, value = 0) => {
     span.id = `total-${totalType}--player-${playerId}`;
     span.textContent = value;
     return span;
+}
+
+export const siblingIndex = (elm) => {
+    const parentChildren = elm.parentNode.children;
+
+    for (let i = 0; i < parentChildren.length; i++) { if (parentChildren[i] === elm) return i; }
 }

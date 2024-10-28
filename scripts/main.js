@@ -1,24 +1,8 @@
 import * as HTML from "./html.js";
-import { Table, Player } from "./classes.js";
+import { Table, tables, Player, players } from "./classes.js";
 
 const loadedCourses = [];
 const loadedCourseIds = [];
-const tables = {
-    front: new Table(),
-    back: new Table(),
-    callBoth(methodName, ...args) {
-        this.front[methodName].apply(this.front, args);
-        this.back[methodName].apply(this.back, args);
-    },
-    buildTables() {
-        HTML.tableContainerFront.innerHTML = "";
-        HTML.tableContainerBack.innerHTML = "";
-
-        HTML.tableContainerFront.appendChild(HTML.buildTable(this.front));
-        HTML.tableContainerBack.appendChild(HTML.buildTable(this.back));
-    }
-}
-const players = [];
 
 const fetchData = async (url) => await (await fetch(url)).json();
 const getCourse = async (courseId) => {
@@ -166,25 +150,44 @@ const onLoad = async () => {
     HTML.addPlayer.addEventListener("click", addNewPlayer);
 
     const scoreChange = (event) => {
-        const scoreInput = event.target;
+        if (event.target.tagName === "TD" && event.target.className === "player-score") {
+            console.log("Click Inside");
+            const td = event.target;
+            // I need to fix this for holes 10 through 18.
+            const hole = HTML.siblingIndex(td);
+            const player = Player.getPlayerByTd(td);
+            console.log("player:", player);
 
-        if (scoreInput.className === "score-input") {
-            const player = players[scoreInput.id.replace(/^input-\d+--player-(?<id>\d+)$/g, "$<id>")];
-            const hole = +(scoreInput.id.replace(/^input-(?<index>\d+)--player-\d+$/g, "$<index>"));
+            const input = document.createElement("input");
+            input.value = td.textContent;
+            td.appendChild(input);
+
+            input.addEventListener("blur", (event) => {
+                player.updateScore(hole, input.value);
+
+                td.textContent = // ........................................................................
+
+                tables.callBoth("log");
+            }, { once: true });
+
+
+
+            // const player = players[scoreInput.id.replace(/^input-\d+--player-(?<id>\d+)$/g, "$<id>")];
+            // const hole = +(scoreInput.id.replace(/^input-(?<index>\d+)--player-\d+$/g, "$<index>"));
 
             
 
             // This updates the hole and the totals for the selected player.
-            player.updateScore(hole, scoreInput.value);
+            // player.updateScore(hole, scoreInput.value);
 
-            console.log("player:", player);
-            console.log("player.scores:", player.scores);
+            // console.log("player:", player);
+            // console.log("player.scores:", player.scores);
 
-            tables.callBoth("log");
+            
 
             // `total-${totalType}--player-${playerId}`
         }
     }
-    document.addEventListener("change", scoreChange);
+    document.addEventListener("click", scoreChange);
 }
 onLoad();

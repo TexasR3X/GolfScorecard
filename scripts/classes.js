@@ -1,3 +1,5 @@
+import * as HTML from "./html.js";
+
 export class Table {
     constructor() {
         this.rows = [];
@@ -55,7 +57,7 @@ export class Player {
         this.updateTotals();
     }
     updateTotals() {
-        // Note that in math all nulls are treated as 0.
+        // Note that in mathematical operations nulls are treated as 0.
 
         // This sets the totals to 0.
         this.totalIn = 0;
@@ -68,7 +70,29 @@ export class Player {
         this.totalOverall = this.totalIn + this.totalOut;
     }
 
-    static myFn() {
-        
+    static getPlayerByTd(td) {
+        const playerName = td.parentNode.children[0].textContent;
+        const tbodyChildren = td.parentNode.parentNode.children;
+
+        for (let i = 0; i < tbodyChildren.length; i++) { if (tbodyChildren[i].children[0].textContent === playerName) return players[i - 3]; }
     }
 }
+
+
+
+export const tables = {
+    front: new Table(),
+    back: new Table(),
+    callBoth(methodName, ...args) {
+        this.front[methodName].apply(this.front, args);
+        this.back[methodName].apply(this.back, args);
+    },
+    buildTables() {
+        HTML.tableContainerFront.innerHTML = "";
+        HTML.tableContainerBack.innerHTML = "";
+
+        HTML.tableContainerFront.appendChild(HTML.buildTable(this.front));
+        HTML.tableContainerBack.appendChild(HTML.buildTable(this.back));
+    }
+}
+export const players = [];
