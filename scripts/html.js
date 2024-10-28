@@ -5,9 +5,6 @@ export const tableContainerFront = document.querySelector("#table-container-fron
 export const tableContainerBack = document.querySelector("#table-container-back");
 export const addPlayer = document.querySelector("#add-player");
 
-// This should be deleted.
-export const buildOption0 = (value, content) => ` <option value="${value}">Select ${content}</option> `;
-
 export const buildOption = (value, content) => {
     const option = document.createElement("option");
     option.value = value;
