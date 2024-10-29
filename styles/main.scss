@@ -1,20 +1,69 @@
-$light-gray: #939393;
+// Imports font "PT Serif".
+@import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+* { font-family: "PT Serif", serif; }
 
-#table-container-front, #table-container-back { overflow: scroll; }
+// Colors
+$color-dark-primary: #abc6ff;
+$color-light-primary: #d4e2ff;
 
-table {
-    border-collapse: collapse;
-    margin: 0.75rem 0;
+$standard-border: 2px solid #000;
+@mixin round-borders {
+    background-color: $color-dark-primary;
+    border-radius: 0.5rem;
+    border: 2px solid #000;
 }
+
+$page-margin: 1rem;
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    background-color: $color-light-primary;
+    padding: 0.5rem;
+    border-top: $standard-border;
+    border-bottom: $standard-border;
+}
+
+img {
+    @include round-borders;
+
+    display: block;
+    margin: 0 $page-margin 2rem $page-margin;
+}
+
+#table-container-front, #table-container-back {
+    overflow: scroll;
+    margin: 0.75rem $page-margin;
+}
+
+table { border-collapse: collapse; }
 th, td {
-    border: 1px solid $light-gray;
+    border: $standard-border;
     padding: 0.75rem 1.5rem;
     text-align: center;
 }
 
-th {
-    background: #6596ff;
+td { background-color: $color-light-primary; }
+th, td:first-child { background: $color-dark-primary; }
+
+button, select {
+    @include round-borders;
+
+    margin: 0 $page-margin 2rem $page-margin;
+    padding: 0.5rem;
+    border: standard-border;
+    cursor: pointer;
 }
-td {
-    background: #cdddff;
+
+input {
+    background-color: $color-light-primary !important;
+    padding: 0.2rem;
+    border: 0px solid #0000;
+    width: 4.5rem;
 }
+
+h3, input { margin: 0 $page-margin; }

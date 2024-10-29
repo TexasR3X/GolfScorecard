@@ -100,8 +100,6 @@ const onLoad = async () => {
             0
         ]);
 
-        tables.callBoth("log");
-
         tables.buildTables();
     }
     HTML.addPlayer.addEventListener("click", addNewPlayer);
@@ -141,8 +139,6 @@ const onLoad = async () => {
 
                     tables.updateTableRow("back", rowIndex, newRow);
                 }
-
-                tables.callBoth("log");
 
                 tables.buildTables();
             }, { once: true });
